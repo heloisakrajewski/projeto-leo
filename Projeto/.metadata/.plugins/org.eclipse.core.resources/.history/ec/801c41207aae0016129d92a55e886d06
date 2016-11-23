@@ -1,0 +1,55 @@
+package br.com.pyrafilms.model.rest;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.core.Link;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+import br.com.pyrafilms.model.Cartao;
+
+@XmlRootElement
+public class Cartoes {
+
+	private List<Cartao> cartoes = new ArrayList<>();
+
+	public Cartoes() {
+	}
+
+	public Cartoes(List<Cartao> cervejas) {
+		this.cartoes = cervejas;
+	}
+
+	@XmlTransient
+	public List<Cartao> getCartoes() {
+		return cartoes;
+	}
+
+	public void setCervejas(List<Cartao> cartoes) {
+		this.cartoes = cartoes;
+	}
+	
+	
+	@XmlElement(name="link")
+	public List<Link> getLinks() {
+		List<Link> links = new ArrayList<>();
+		for (Cartao cartao : getCartoes()) {
+			
+			Link link = Link.fromPath("cervejas/{nome}")
+					.rel("cerveja")
+					.title(cartao.getNome())
+					.build(cartao.getNome());
+			
+			
+			links.add(link);
+		}
+		return links;
+	}
+	
+	public void setLinks (List<Link> links) {
+		
+	}
+
+}

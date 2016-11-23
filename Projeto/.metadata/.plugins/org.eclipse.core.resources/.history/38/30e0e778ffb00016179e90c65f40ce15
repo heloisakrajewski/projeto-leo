@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- As 3 meta tags acima *devem* vir em primeiro lugar dentro do `head`; qualquer outro conteúdo deve vir *após* essas tags -->
+<title>Pyra Films</title>
+
+<!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+	<div class="container">
+
+		<div class="panel panel-primary">
+			<div class="panel-heading">Administrar usuário</div>
+			<div class="panel-body">
+
+				<form id="criarUsuarioForm">
+					<div class="form-group">
+						<label>Id</label> 
+						<input type="text" class="form-control"name="id" />
+						
+						<label>Nome</label> 
+						<input type="text" class="form-control" name="nome" />
+						 
+						<label>CPF</label> 
+						<input type="text" class="form-control" name="cpf" /> 
+						
+						<label>Email</label>
+						<input type="text" class="form-control" name="email"></input>
+						
+						<br />					
+						
+						<div class="btn-block btn-group">
+						<input type="reset" class="btn btn-default" value="Limpar" />
+						<input type="button" class="btn btn-primary" value="Salvar"
+							onclick="adicionarUsuario();" />
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="panel panel-default">
+				<!-- Default panel contents -->
+				<div class="panel-heading">Listagem de Usuarios</div>
+				<table id="grid-usuarios" class="table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nome</th>
+							<th>Email</th>
+							<th>CPF</th>
+							<th>Opções</th>
+						</tr>
+					</thead>
+					<tr>
+						
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div id="images" class="panel" style="float: left;"></div> -->
+
+	<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
+	<script src="js/json.js" type="text/javascript"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<!-- <script src="js/custom.js" type="text/javascript"></script> -->
+	<script type="text/javascript">
+var host = "http://localhost:8080/pyrafilms/services/";
+	
+	
+	$(document).ready(function() {
+		listarUsuarios();
+	});
+	
+	function listarUsuarios() {
+		$.ajax({ 
+			url : host + 'usuarios/',
+			type : 'GET',
+			 headers: {          
+                 Accept : 'application/json'   
+  			},    
+			success : function(data) {
+				renderizarUsuarios(data);
+		
+			},
+			error: function(data) {
+				alert("Erro na invocaÃ§Ã£o");
+			}
+		});	
+	};
+	
+	function renderizarUsuarios(data) {
+		var str = "";
+
+		$.each(data.usuarioes.usuario, function(i, usuario) {
+			str += '<tr>';
+			str += '<td>' + usuario.id + '</td>';
+			str += '<td>' + usuario.nome + '</td>';
+			str += '<td>' + usuario.email + '</td>';
+			str += '<td>' + usuario.cpf + '</td>';
+			str += '<td>';
+			str += '<button class="btn btn-primary" onclick="carregaUsuario(' + usuario.id + ');">Editar</button>';
+			str += '&nbsp;<button class="btn btn-danger" name="excluirUsuari" onclick="excluirUsuario('+ usuario.id +')">Excluir</button>';
+			str += '</td>';
+			str += '</tr>';
+		});
+		
+		$("#grid-usuarios tbody").append(str);
+		
+		$("[name='excluirUsuario'").click(function() {
+			excluirUsuario($(this).data("id"));
+		});
+	}
+
+	function excluirUsuario(id) {
+		$.ajax({
+				url : host + 'usuarios/' + id,
+				type : 'DELETE',
+				success : function(data) {
+					$("#grid-usuarios tbody").remove(id);
+				},
+				error : function(data) {
+					console.log(data);
+					alert("Ocorreu um erro: " + data.status + " "
+							+ data.statusText);
+				}
+			});
+
+	};
+	
+	function adicionarUsuario() {
+		alert(1);
+	}
+	
+	function adicionaUsuario() {
+		/*var data = $("#criarUsuarioForm").serializeJSON();
+
+			if(data.id){
+				//atualizaCerveja(data);
+	  		}else {
+	  			criaUsuario(data);
+	  	  	}
+
+		  */
+		
+		alert(1);
+		
+		}
+	
+	function criaUsuario(data){
+		data = "{\"usuario\":" + JSON.stringify(data) + "}";
+		$.ajax({
+		   url : host + 'usuarios',
+		   type : 'POST',
+		   contentType : 'application/json',
+		   data : data,
+		   success : function(data) {
+			  alert("Incluído com sucesso!");
+			  $("#criarUsuarioForm")[0].reset();
+			  listarUsuarios();
+		   },
+		   error : function(data) {
+			 
+				console.log(data);
+				alert("Ocorreu um erro: " + data.status + " "
+						+ data.statusText);	
+		   }
+		 });
+	}
+	</script>
+</body>
+</html>

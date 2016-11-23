@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="br.com.pyrafilms.model.IBean"/>
+<fullyQualifiedTypeName name="javax.persistence.NamedQuery"/>
+<fullyQualifiedTypeName name="javax.persistence.Entity"/>
+<fullyQualifiedTypeName name="java.util.Date"/>
+<fullyQualifiedTypeName name="br.com.pyrafilms.model.Aluguel"/>
+<fullyQualifiedTypeName name="br.com.pyrafilms.dao.CartaoDao"/>
+<fullyQualifiedTypeName name="br.com.pyrafilms.model.Cartao"/>
+<fullyQualifiedTypeName name="br.com.pyrafilms.model.rest.Cartoes"/>
+<fullyQualifiedTypeName name="br.com.pyrafilms.dao.FilmeDao"/>
+<fullyQualifiedTypeName name="br.com.pyrafilms.dao.HistoricoDao"/>
+<fullyQualifiedTypeName name="javax.persistence.EntityManagerFactory"/>
+<fullyQualifiedTypeName name="javax.persistence.Persistence"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.Collection"/>
+<fullyQualifiedTypeName name="javax.xml.bind.annotation.XmlTransient"/>
+<fullyQualifiedTypeName name="javax.persistence.TypedQuery"/>
+<fullyQualifiedTypeName name="T"/>
+<fullyQualifiedTypeName name="javax.persistence.Temporal"/>
+<fullyQualifiedTypeName name="javax.persistence.ManyToOne"/>
+<fullyQualifiedTypeName name="br.com.pyrafilms.services.UsuarioService"/>
+<fullyQualifiedTypeName name="javax.ws.rs.DELETE"/>
+<fullyQualifiedTypeName name="br.com.pyrafilms.dao.UsuarioDao"/>
+<fullyQualifiedTypeName name="javax.ws.rs.POST"/>
+<fullyQualifiedTypeName name="br.com.pyrafilms.model.UsuarioJaExisteException"/>
+<fullyQualifiedTypeName name="java.net.URI"/>
+<fullyQualifiedTypeName name="br.com.pyrafilms.model.Usuario"/>
+<fullyQualifiedTypeName name="javax.ws.rs.PUT"/>
+</qualifiedTypeNameHistroy>

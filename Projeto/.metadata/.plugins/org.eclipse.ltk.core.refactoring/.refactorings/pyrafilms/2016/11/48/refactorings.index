@@ -1,0 +1,6 @@
+1479659553240	Extract constant 'PYRAFILMS'
+1479660065830	Rename local variable 'cartao'
+1479660103530	Encapsulate field 'cartoes'
+1479661739801	Copy compilation unit
+1479768914736	Rename local variable 'cervejas'
+1479851602793	Rename type 'CervejaJaExisteException'

@@ -1,0 +1,27 @@
+package br.com.pyrafilms.dao;
+
+import java.util.List;
+
+import javax.persistence.Query;
+
+import br.com.pyrafilms.model.Usuario;
+
+public class UsuarioDao extends JpaDaoBase<Usuario> implements IDao<Usuario> {
+
+	public Usuario buscaPorNome(String nome) {
+		Query query = em.createNamedQuery("Usuario.buscaPorNome").setParameter("nome", nome);
+		List<Usuario> usuarios = query.getResultList();
+		if (!usuarios.isEmpty())
+			return usuarios.get(0);
+		return null;
+	}
+	
+	public void remove(String nome) {
+		em.getTransaction().begin();
+		Query query = em.createQuery("DELETE FROM Usuario c WHERE c.nome = :nome ").setParameter("nome", nome);
+		query.executeUpdate();
+		em.getTransaction().commit();
+	}
+	
+	
+}

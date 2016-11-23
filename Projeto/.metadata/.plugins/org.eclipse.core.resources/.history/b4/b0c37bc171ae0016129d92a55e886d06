@@ -1,0 +1,22 @@
+package br.com.pyrafilms.dao;
+
+public class JpaDaoFactory {
+
+	public static JpaDaoFactory instance = new JpaDaoFactory();
+	
+	private CartaoDao cartaoDao;
+	
+
+	private JpaDaoFactory() {}
+		
+	public static JpaDaoFactory getInstance(){
+		return instance;
+	}
+	
+	
+	public CartaoDao getCartaoDao(){
+		if(this.cartaoDao == null)
+		return this.cartaoDao;
+	}
+
+}

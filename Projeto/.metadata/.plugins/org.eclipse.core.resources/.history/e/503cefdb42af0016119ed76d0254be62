@@ -1,0 +1,47 @@
+package br.com.pyrafilms.services;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+
+import br.com.pyrafilms.model.Usuario;
+
+
+@Path("/olaMundo")
+public class TesteService {
+
+	private static final String PYRAFILMS = "pyrafilms";
+
+	public TesteService() {
+		System.out.println("construindo testeservice");
+	}
+	
+	@GET
+	@Produces("text/plain")
+	public String dizOla() {
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory(PYRAFILMS);
+		EntityManager em = emf.createEntityManager();
+		
+		StringBuffer sb = new StringBuffer();
+		
+		try {
+			TypedQuery<Usuario> query = em.createQuery("select u from Usuario u",Usuario.class);
+			List<Usuario> usuarios = query.getResultList();
+			for (Usuario usuario : usuarios) {
+				sb.append(usuario.getNome());
+				sb.append("\n");
+			}
+		}finally{
+			if (em != null && em.isOpen()) em.close();
+			if (emf != null && emf.isOpen()) emf.close();
+		}
+		
+		return sb.toString();
+	}
+}

@@ -1,0 +1,235 @@
+	var host = "http://localhost:8080/pyrafilms/services/";
+	
+	
+	$(document).ready(function() {
+		listarUsuarios();
+	});
+	
+	function listarUsuarios() {
+		$.ajax({ 
+			url : host + 'usuarios/',
+			type : 'GET',
+			 headers: {          
+                 Accept : 'application/json'   
+  			},    
+			success : function(data) {
+				renderizarUsuarios(data);
+		
+			},
+			error: function(data) {
+				alert("Erro na invocaÃ§Ã£o");
+			}
+		});	
+	};
+	
+	function renderizarUsuarios(data) {
+		var str = "";
+		
+		$.each(data.usuarioes.usuario, function(i, usuario) {
+			str += '<tr>';
+			str += '<td>' + usuario.id + '</td>';
+			str += '<td>' + usuario.nome + '</td>';
+			str += '<td>' + usuario.email + '</td>';
+			str += '<td>' + usuario.cpf + '</td>';
+			str += '<td>';
+			str += '<a href="editar.xhtml?id="'+usuario.id+'"><button class="btn btn-primary">Editar</button></a>';
+			str += '&nbsp;<button class="btn btn-danger" name="excluirUsuari" onclick="excluir('+ usuario.id +')">Excluir</button>';
+			str += '</td>';
+			str += '</tr>';
+		});
+		
+		$("#grid-usuarios tbody").append(str);
+		
+		$("[name='excluirUsuario'").click(function() {
+			excluirUsuario($(this).data("id"));
+		});
+	}
+	
+	function excluir(param) {
+		alert(param);
+	};
+	
+	function excluirUsuario(id) {
+		$.ajax({
+				url : host + 'usuarios/' + 1,
+				type : 'DELETE',
+				success : function(data) {
+					listarUsuarios();
+				},
+				error : function(data) {
+					console.log(data);
+					alert("Ocorreu um erro: " + data.status + " "
+							+ data.statusText);
+				}
+			});
+
+	}
+	
+	/*
+	function listarUsuarios() {  
+			$.ajax({ 
+				url : host + 'usuarios',
+				type : 'GET',
+				 headers: {          
+	                 Accept : 'application/json'   
+	  			},    
+				success : function(data) {
+
+					$('#grid tr:gt(0)').remove();
+					if ($.isArray(data.usuarioes.usuario)) {
+					   for ( var i = 0; i < data.usuarioes.usuario.length; i++) {
+					      var link = data.usuarioes.usuario[i]['@href'];
+					      segueLinkUsuario(link);
+					   }
+					} else {
+					   var link = data.usuarioes.usuario['@href'];
+					   segueLinkUsuario(link);
+					}
+			
+				},
+				error: function(data) {
+					alert("Erro na invocaÃ§Ã£o");
+				}
+			});
+		}      
+		
+		
+		function segueLinkUsuario(link) {
+		   $.ajax({
+		      url : host + link,
+		      type : 'GET',
+		      success : function(data) {
+		         adicionaUsuarioNovoAoGrid(data.usuario);
+		      },
+		      error : function(data) {
+		         alert("Ocorreu um erro");
+		      }
+		   });
+		}
+		
+		function adicionaUsuarioNovoAoGrid(usuario) {
+
+			 var data = "<tr onmouseover='verUsuario(\"" + usuario.nome + "\")' >"
+	  		      + "<td>" + usuario.nome + "</td>"
+	  		      + "<td>" + usuario.email + "</td>"
+	  		      + "<td>" + usuario.cpf + "</td>"
+	  		      + "<td><input type=\"button\" class=\"btn btn-danger\"  value=\"Apagar\" "
+	  		      + "onclick=\"apagaUsuario('" + usuario.nome + "');\" /> " 
+	  		    + "<input type=\"button\" value=\"Editar\"  class=\"btn btn-primary\""
+	  		      + "onclick=\"carregaUsuario('" + usuario.nome + "');\" /></td>" 
+	  		      + "</tr>";
+
+	  		   $("#grid").append(data);
+	  		}
+
+		function adicionaUsuario() {
+			var data = $("#criarUsuarioForm").serializeJSON();
+
+  			if(data.id){
+  				atualizaUsuario(data);
+  	  		}else {
+  	  			criaUsuario(data);
+  	  	  	}
+
+  		    
+  		}
+
+  		function criaUsuario(data){
+  			 data = "{\"usuario\":" + JSON.stringify(data) + "}";
+   			$.ajax({
+   			   url : host + 'usuarios',
+   			   type : 'POST',
+   			   contentType : 'application/json',
+   			   data : data,
+   			   success : function(data) {
+   				  alert("Incluído com sucesso!");
+   				  $("#criarUsuarioForm")[0].reset();
+   				  listarUsuarios();
+   			   },
+   			   error : function(data) {
+   				 
+ 						console.log(data);
+ 						alert("Ocorreu um erro: " + data.status + " "
+ 								+ data.statusText);	
+   			   }
+   			 });
+  		}
+
+
+		function atualizaUsuario(data) {
+			id = data.nome;
+  			data = "{\"cerveja\":" + JSON.stringify(data) + "}";
+  			$.ajax({
+  			   url : host + 'usuarios/'+id,
+  			   type : 'PUT',
+  			   contentType : 'application/json',
+  			   data : data,
+  			   success : function(data) {
+  				  alert("Incluído com sucesso!");
+  				  $("#criarUsuarioForm")[0].reset();
+  				  listarUsuarios();
+  			   },
+  			   error : function(data) {
+						console.log(data);
+						alert("Ocorreu um erro: " + data.status + " "+ data.statusText);
+					
+  			   }
+  			 });
+  		}
+
+		function apagaUsuario(id) {
+  			$.ajax({
+  						url : host + 'usuarios/' + id,
+  						type : 'DELETE',
+  						success : function(data) {
+  							listarUsuarios();
+  						},
+  						error : function(data) {
+  							console.log(data);
+  							alert("Ocorreu um erro: " + data.status + " "
+  									+ data.statusText);
+  						}
+  					});
+
+  		}
+
+		function carregaUsuario(id) {
+					$.ajax({
+						url : host + 'usuarios/' + id,
+						type : 'GET',
+						success : function(data) {
+							var frm =  $("#criarUsuarioForm");
+							 $.each(data.cerveja, function(key, value){
+								    $('[name='+key+']', frm).val(value);
+							});
+						},
+						error : function(data) {
+							console.log(data);
+							alert("Ocorreu um erro: " + data.status + " "
+									+ data.statusText);
+						}
+					});
+
+		}
+		
+		/*function verUsuario(nome) {
+  			$('#images').html('Loading...');
+			$.ajax({
+				url: '/handson-20/services/usuarios/' + nome,
+				method: 'GET',
+				headers: {
+					Accept: 'image/*'
+				},
+				processData: false,
+				cache: false,
+				success: function (data) {
+					console.info(data);
+					$('#images').html('<img width=300 height=500 src="data:image/png;base64,' + data + '" />');
+				},
+				failure: function (data) {
+					console.info('ERRO');
+					$('#images').html('');
+				}
+			});
+ 	  	}*/
+		

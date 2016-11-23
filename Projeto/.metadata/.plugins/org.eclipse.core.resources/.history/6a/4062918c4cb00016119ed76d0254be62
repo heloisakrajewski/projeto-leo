@@ -1,0 +1,21 @@
+package br.com.pyrafilms.services;
+
+import java.util.List;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+
+import br.com.pyrafilms.dao.UsuarioDao;
+import br.com.pyrafilms.model.Usuario;
+
+
+@Path("/usuarios")
+public class UsuarioService {
+
+	@GET
+	@Produces("application/json")
+	public List<Usuario> listarUsuarios() {
+		return new UsuarioDao().listaTodos();
+	}
+}

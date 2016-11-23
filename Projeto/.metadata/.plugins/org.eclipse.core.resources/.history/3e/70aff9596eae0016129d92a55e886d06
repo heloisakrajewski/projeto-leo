@@ -1,0 +1,73 @@
+package br.com.pyrafilms.model;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+
+@NamedQuery(name="Filme.buscaPorNome", query="SELECT f FROM Filme f where f.nome = :nome ") 
+
+@Entity
+public class Filme implements IBean{
+
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String nome;
+	private Genero genero;
+	private String duracao;
+	private String diretor;
+	
+	
+	
+	public Filme() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public Filme(Long id, String nome, Genero genero, String duracao,
+			String diretor) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.genero = genero;
+		this.duracao = duracao;
+		this.diretor = diretor;
+	}
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getNome() {
+		return nome;
+	}
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+	public Genero getGenero() {
+		return genero;
+	}
+	public void setGenero(Genero genero) {
+		this.genero = genero;
+	}
+	public String getDuracao() {
+		return duracao;
+	}
+	public void setDuracao(String duracao) {
+		this.duracao = duracao;
+	}
+	public String getDiretor() {
+		return diretor;
+	}
+	public void setDiretor(String diretor) {
+		this.diretor = diretor;
+	}
+	
+}

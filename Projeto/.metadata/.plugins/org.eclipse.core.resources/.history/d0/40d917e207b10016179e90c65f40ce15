@@ -1,0 +1,76 @@
+package br.com.pyrafilms.services;
+
+import java.net.URI;
+import java.util.List;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+
+import br.com.pyrafilms.dao.JpaDaoFactory;
+import br.com.pyrafilms.dao.UsuarioDao;
+import br.com.pyrafilms.model.Usuario;
+import br.com.pyrafilms.model.UsuarioJaExisteException;
+
+
+@Path("/usuarios")
+public class UsuarioService {
+
+	private UsuarioDao usuarioDao = JpaDaoFactory.getInstance().getUsuarioDao();
+	
+	@GET
+	@Produces("application/json")
+	public List<Usuario> listarUsuarios() {
+		return new UsuarioDao().listaTodos();
+	}
+	
+	@DELETE
+	@Path("{id}")
+	public void apagarUsuario(@PathParam("id") Long id) {
+		usuarioDao.remove(id);
+	}
+	
+	@POST
+	public Response criarUsuario(Usuario usuario) {
+
+		try {
+			usuarioDao.salva(usuario);
+		} catch (UsuarioJaExisteException e) {
+			throw new WebApplicationException(Status.CONFLICT);
+		}
+
+		URI uri = UriBuilder.fromPath("usuarios/{nome}").build(
+				usuario.getNome());
+
+		return Response.created(uri).entity(usuario).build();
+	}
+	
+	@GET
+	@Path("{id}")
+	public Usuario encontreUsuario(@PathParam("id") Long id) {
+		Usuario usuario = usuarioDao.buscaPorId(id);
+		if (usuario != null)
+			return usuario;
+
+		throw new WebApplicationException(Status.NOT_FOUND);
+
+	}
+	
+	@PUT
+	@Path("{data}")
+	public void atualizarCerveja(@PathParam("data") Usuario data, Usuario usuario) {
+		//Usuario usu = encontreUsuario(data.getId());
+		usuario.setNome(data.getNome());
+		usuario.setEmail(data.getEmail());
+		usuarioDao.atualiza(usuario);
+	}
+	
+}
