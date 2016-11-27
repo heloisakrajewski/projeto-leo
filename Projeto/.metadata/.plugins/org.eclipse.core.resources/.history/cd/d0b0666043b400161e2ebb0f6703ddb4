@@ -1,0 +1,63 @@
+package br.com.pyrafilms.services;
+
+import java.net.URI;
+import java.util.List;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+
+import br.com.pyrafilms.dao.CartaoDao;
+import br.com.pyrafilms.dao.FilmeDao;
+import br.com.pyrafilms.dao.GeneroDao;
+import br.com.pyrafilms.dao.JpaDaoFactory;
+import br.com.pyrafilms.dao.UsuarioDao;
+import br.com.pyrafilms.model.Cartao;
+import br.com.pyrafilms.model.Filme;
+import br.com.pyrafilms.model.Genero;
+import br.com.pyrafilms.model.Usuario;
+import br.com.pyrafilms.model.UsuarioJaExisteException;
+
+
+@Path("/cartaos")
+public class CartaoService {
+
+	private CartaoDao cartaoDao = JpaDaoFactory.getInstance().getCartaoDao();
+
+	@GET
+	@Produces("application/json")
+	public List<Cartao> listarCartoes() {
+		return new CartaoDao().listaTodos();
+	}
+	
+	@DELETE
+	@Path("{id}")
+	public void apagarCartao(@PathParam("id") Long id) {
+		cartaoDao.remove(id);
+	}
+	
+	@POST
+	public Response criarCartao(Cartao cartao) {
+
+		try {
+			cartaoDao.salva(cartao);
+		} catch (UsuarioJaExisteException e) {
+			throw new WebApplicationException(Status.CONFLICT);
+		}
+
+		URI uri = UriBuilder.fromPath("cartaos/{nome}").build(
+				cartao.getNome());
+
+		return Response.created(uri).entity(cartao).build();
+	}
+	
+	
+}

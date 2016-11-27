@@ -1,0 +1,75 @@
+package br.com.pyrafilms.services;
+
+import java.net.URI;
+import java.util.List;
+
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+
+import br.com.pyrafilms.dao.GeneroDao;
+import br.com.pyrafilms.dao.JpaDaoFactory;
+import br.com.pyrafilms.model.Filme;
+import br.com.pyrafilms.model.Genero;
+import br.com.pyrafilms.model.UsuarioJaExisteException;
+
+
+@Path("/generos")
+public class GeneroService {
+
+	private GeneroDao generoDao = JpaDaoFactory.getInstance().getGeneroDao();
+	
+	@GET
+	@Produces("application/json")
+	public List<Genero> listarGeneros() {
+		return new GeneroDao().listaTodos();
+	}
+	
+	@DELETE
+	@Path("{id}")
+	public void apagarGenero(@PathParam("id") Long id) {
+		generoDao.remove(id);
+	}
+	
+	@POST
+	public Response criarGenero(Genero genero) {
+
+		try {
+			generoDao.salva(genero);
+		} catch (UsuarioJaExisteException e) {
+			throw new WebApplicationException(Status.CONFLICT);
+		}
+
+		URI uri = UriBuilder.fromPath("generos/{id}").build(
+				genero.getId());
+
+		return Response.created(uri).entity(genero).build();
+	}
+	
+	@GET
+	@Path("{id}")
+	public Genero encontreGenero(@PathParam("id") Long id) {
+		Genero genero = generoDao.buscaPorId(id);
+		if (genero != null)
+			return genero;
+		
+		throw new WebApplicationException(Status.NOT_FOUND);
+
+	}
+	
+	@PUT
+	public void atualizarGenero(Genero genero) {
+		Genero gen = encontreGenero(genero.getId());
+		gen.setDescricao(genero.getDescricao());
+		generoDao.atualiza(gen);
+	}
+	
+}

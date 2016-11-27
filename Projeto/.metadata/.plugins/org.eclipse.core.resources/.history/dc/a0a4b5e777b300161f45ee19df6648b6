@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- As 3 meta tags acima *devem* vir em primeiro lugar dentro do `head`; qualquer outro conteúdo deve vir *após* essas tags -->
+<title>Pyra Films</title>
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="shortcut icon" href="favicon.ico" type="img/x-icon">
+
+
+<!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+
+</head>
+<body>
+	<header class="header" id="header"><!--header-start-->
+		<div class="container">
+
+	    </div>
+	</header>
+	<div class="container">
+
+		<div class="panel panel-primary">
+			<div class="panel-heading">Administrar filme</div>
+			<div class="panel-body">
+
+				<form id="criarFilmeForm">
+					<div class="form-group">
+						<label hidden>Id</label> 
+						<input type="text" class="form-control hidden" name="id" />
+						
+						<label>Nome</label> 
+						<input type="text" class="form-control" name="nome" />
+						 
+						<label>Diretor</label> 
+						<input type="text" class="form-control" name="diretor" /> 
+						
+						<label>Duração</label>
+						<input type="text" class="form-control" name="duracao"></input>
+						
+						<label>Genero</label>
+		<select class="selectpicker">
+  <option>Mustard</option>
+  <option>Ketchup</option>
+  <option>Relish</option>
+</select>
+
+						
+						<br />					
+						
+						<div class="btn-block btn-group">
+						<input type="reset" class="btn btn-default" value="Limpar" />
+						<input type="button" class="btn btn-primary" value="Salvar"
+							onclick="adicionarFilme();" />
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="panel panel-default">
+				<!-- Default panel contents -->
+				<div class="panel-heading">Listagem de Filmes</div>
+				<table id="grid-filmes" class="table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nome</th>
+							<th>Diretor</th>
+							<th>Duração</th>
+							<th>Opções</th>
+						</tr>
+					</thead>
+					<tr>
+						
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div id="images" class="panel" style="float: left;"></div> -->
+
+	<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
+	<script src="js/json.js" type="text/javascript"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<!-- <script src="js/custom.js" type="text/javascript"></script> -->
+	<script type="text/javascript">
+
+	var host = "http://localhost:8080/pyrafilms/services/";
+	
+	
+	$(document).ready(function() {
+		listarFilmes();
+	});
+	
+	function listarFilmes() {
+		$.ajax({ 
+			url : host + 'filmes/',
+			type : 'GET',
+			 headers: {          
+                 Accept : 'application/json'   
+  			},    
+			success : function(data) {
+				renderizarFilmes(data);
+		
+			},
+			error: function(data) {
+				alert("Erro na invocaÃ§Ã£o");
+			}
+		});	
+	};
+	
+	function renderizarFilmes(data) {
+		var str = "";
+
+		$.each(data.filmes.filme, function(i, filme) {
+			str += '<tr>';
+			str += '<td>' + filme.id + '</td>';
+			str += '<td>' + filme.nome + '</td>';
+			str += '<td>' + filme.diretor + '</td>';
+			str += '<td>' + filme.duracao + '</td>';
+			str += '<td>';
+			str += '<button class="btn btn-primary" onclick="carregaFilme(' + filme.id + ');">Editar</button>';
+			str += '&nbsp;<button class="btn btn-danger" name="excluirUsuari" onclick="excluirFilme('+ filme.id +')">Excluir</button>';
+			str += '</td>';
+			str += '</tr>';
+		});
+		
+		$("#grid-filmes tbody").append(str);
+	
+	}
+
+	function excluirFilme(id) {
+		$.ajax({
+				url : host + 'filmes/' + id,
+				type : 'DELETE',
+				success : function(data) {
+					$("#grid-filmes tbody").remove(id);
+				},
+				error : function(data) {
+					console.log(data);
+					alert("Ocorreu um erro: " + data.status + " "
+							+ data.statusText);
+				}
+			});
+
+	};
+	
+	function adicionarFilme() {
+		var data = $("#criarFilmeForm").serializeJSON();
+
+		if(data.id){
+			atualizaFilme(data);	
+  		}else {
+  			criaFilme(data);
+  	  	}
+	}
+
+	function atualizaFilme(data) {
+		id = data.id;
+			data = "{\"filme\":" + JSON.stringify(data) + "}";
+			$.ajax({
+			   url : host + 'filmes',
+			   type : 'PUT',
+			   contentType : 'application/json',
+			   data : data,
+			   success : function(data) {
+				  //alert("Incluído com sucesso!");
+				  //$("#criarFilmeForm")[0].reset();
+				  listarFilmes();
+			   },
+			   error : function(data) {
+					console.log(data);
+					alert("Ocorreu um erro: " + data.status + " "+ data.statusText);
+				
+			   }
+			 });
+		}
+	
+	function carregaFilme(id) {
+		$.ajax({
+			url : host + 'filmes/' + id,
+			type : 'GET',
+			success : function(data) {
+				var frm =  $("#criarFilmeForm");
+				 $.each(data.filme, function(key, value){
+					    $('[name='+key+']', frm).val(value);
+				});
+			},
+			error : function(data) {
+				console.log(data);
+				alert("Ocorreu um erro: " + data.status + " "
+						+ data.statusText);
+			}
+		});
+
+	}
+
+	
+	function criaFilme(data){
+		data = "{\"filme\":" + JSON.stringify(data) + "}";
+		$.ajax({
+		   url : host + 'filmes',
+		   type : 'POST',
+		   contentType : 'application/json',
+		   data : data,
+		   success : function(data) {
+			  alert("Incluído com sucesso!");
+			  $("#criarFilmeForm")[0].reset();
+			  listarFilmes();
+		   },
+		   error : function(data) {
+			 
+				console.log(data);
+				alert("Ocorreu um erro: " + data.status + " "
+						+ data.statusText);	
+		   }
+		 });
+	}
+	</script>
+</body>
+</html>

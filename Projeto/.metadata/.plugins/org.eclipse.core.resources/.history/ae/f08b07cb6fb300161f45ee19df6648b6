@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pyra Films</title>
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="shortcut icon" href="favicon.ico" type="img/x-icon">
+
+
+<!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+
+</head>
+<body>
+	<header class="header" id="header"><!--header-start-->
+		<div class="container">
+
+	    </div>
+	</header>
+	<div class="container">
+
+		<div class="panel panel-primary">
+			<div class="panel-heading">Administrar cartão</div>
+			<div class="panel-body">
+
+				<form id="criarCartaoForm">
+					<div class="form-group">
+						<label hidden>Id</label> 
+						<input type="text" class="form-control hidden" name="id" />
+						
+						<label>Nome</label> 
+						<input type="text" class="form-control" name="nome" />
+						 
+						<label>Número</label> 
+						<input type="text" class="form-control" name="numero" /> 
+						
+						<label>Duração</label>
+						<input type="text" class="form-control" name="duracao"></input>
+						
+						<br />					
+						
+						<div class="btn-block btn-group">
+						<input type="reset" class="btn btn-default" value="Limpar" />
+						<input type="button" class="btn btn-primary" value="Salvar"
+							onclick="adicionarCartao();" />
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="panel panel-default">
+				<!-- Default panel contents -->
+				<div class="panel-heading">Listagem de Cartaos</div>
+				<table id="grid-cartaos" class="table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Nome</th>
+							<th>CPF</th>
+							<th>Número</th>
+							<th>Opções</th>
+						</tr>
+					</thead>
+					<tr>
+						
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div id="images" class="panel" style="float: left;"></div> -->
+
+	<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
+	<script src="js/json.js" type="text/javascript"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<!-- <script src="js/custom.js" type="text/javascript"></script> -->
+	<script type="text/javascript">
+
+	var host = "http://localhost:8080/pyrafilms/services/";
+	
+	
+	$(document).ready(function() {
+		listarCartaos();
+	});
+	
+	function listarCartaos() {
+		$.ajax({ 
+			url : host + 'cartaos/',
+			type : 'GET',
+			 headers: {          
+                 Accept : 'application/json'   
+  			},    
+			success : function(data) {
+				renderizarCartaos(data);
+		
+			},
+			error: function(data) {
+				alert("Erro na invocaÃ§Ã£o");
+			}
+		});	
+	};
+	
+	function renderizarCartaos(data) {
+		var str = "";
+
+		$.each(data.cartaos.cartao, function(i, cartao) {
+			str += '<tr>';
+			str += '<td>' + cartao.id + '</td>';
+			str += '<td>' + cartao.nome + '</td>';
+			str += '<td>' + cartao.cpf + '</td>';
+			str += '<td>' + cartao.numero + '</td>';
+			str += '<td>';
+			str += '<button class="btn btn-primary" onclick="carregaCartao(' + cartao.id + ');">Editar</button>';
+			str += '&nbsp;<button class="btn btn-danger" name="excluirUsuari" onclick="excluirCartao('+ cartao.id +')">Excluir</button>';
+			str += '</td>';
+			str += '</tr>';
+		});
+		
+		$("#grid-cartaos tbody").append(str);
+	
+	}
+
+	function excluirCartao(id) {
+		$.ajax({
+				url : host + 'cartaos/' + id,
+				type : 'DELETE',
+				success : function(data) {
+					$("#grid-cartaos tbody").remove(id);
+				},
+				error : function(data) {
+					console.log(data);
+					alert("Ocorreu um erro: " + data.status + " "
+							+ data.statusText);
+				}
+			});
+
+	};
+	
+	function adicionarCartao() {
+		var data = $("#criarCartaoForm").serializeJSON();
+
+		if(data.id){
+			atualizaCartao(data);	
+  		}else {
+  			criaCartao(data);
+  	  	}
+	}
+
+	function atualizaCartao(data) {
+		id = data.id;
+			data = "{\"cartao\":" + JSON.stringify(data) + "}";
+			$.ajax({
+			   url : host + 'cartaos',
+			   type : 'PUT',
+			   contentType : 'application/json',
+			   data : data,
+			   success : function(data) {
+				  //alert("Incluído com sucesso!");
+				  //$("#criarCartaoForm")[0].reset();
+				  listarCartaos();
+			   },
+			   error : function(data) {
+					console.log(data);
+					alert("Ocorreu um erro: " + data.status + " "+ data.statusText);
+				
+			   }
+			 });
+		}
+	
+	function carregaCartao(id) {
+		$.ajax({
+			url : host + 'cartaos/' + id,
+			type : 'GET',
+			success : function(data) {
+				var frm =  $("#criarCartaoForm");
+				 $.each(data.Cartao, function(key, value){
+					    $('[name='+key+']', frm).val(value);
+				});
+			},
+			error : function(data) {
+				console.log(data);
+				alert("Ocorreu um erro: " + data.status + " "
+						+ data.statusText);
+			}
+		});
+
+	}
+
+	
+	function criaCartao(data){
+		data = "{\"cartao\":" + JSON.stringify(data) + "}";
+		$.ajax({
+		   url : host + 'cartaos',
+		   type : 'POST',
+		   contentType : 'application/json',
+		   data : data,
+		   success : function(data) {
+			  alert("Incluído com sucesso!");
+			  $("#criarCartaoForm")[0].reset();
+			  listarCartaos();
+		   },
+		   error : function(data) {
+			 
+				console.log(data);
+				alert("Ocorreu um erro: " + data.status + " "
+						+ data.statusText);	
+		   }
+		 });
+	}
+	</script>
+</body>
+</html>

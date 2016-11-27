@@ -1,0 +1,8 @@
+!SESSION 
+
+!ENTRY org.jboss.ide.eclipse.as.core 4 0 2016-11-25 21:00:28.536
+!MESSAGE The server "WildFly 8.x" requires a JDK to run properly. The VM used to launch this server is not recognized as a valid JDK. C:\Program Files\Java\jre1.8.0_45 
+!SESSION 
+
+!ENTRY org.jboss.ide.eclipse.as.core 4 0 2016-11-26 23:47:09.597
+!MESSAGE The server "WildFly 8.x" requires a JDK to run properly. The VM used to launch this server is not recognized as a valid JDK. C:\Program Files\Java\jre1.8.0_45 

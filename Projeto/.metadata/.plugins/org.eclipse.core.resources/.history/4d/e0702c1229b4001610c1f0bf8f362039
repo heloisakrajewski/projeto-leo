@@ -1,0 +1,34 @@
+package br.com.pyrafilms.dao;
+
+import java.util.List;
+
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
+import br.com.pyrafilms.model.Cartao;
+
+public class CartaoDao extends JpaDaoBase<Cartao> implements IDao<Cartao> {
+
+	public Cartao buscaPorId(Long id) {
+		Query query = em.createNamedQuery("Cartao.buscaPorId").setParameter("id", id);
+		List<Cartao> cartaos = query.getResultList();
+		if (!cartaos.isEmpty())
+			return cartaos.get(0);
+		return null;
+	}
+	
+	public void remove(Long id) {
+		em.getTransaction().begin();
+		Query query = em.createQuery("DELETE FROM Cartao c WHERE c.id = :id ").setParameter("id", id);
+		query.executeUpdate();
+		em.getTransaction().commit();
+	}
+
+	public List<Cartao> listaCartoesUsuario(Long usuario) {
+		Query query = em.createQuery("SELECT * FROM cartao where usuario_id = :usuario").setParameter("usuario", usuario);
+		List<Cartao> cartaos = query.getResultList();
+		return cartaos;
+	}
+	
+	
+}

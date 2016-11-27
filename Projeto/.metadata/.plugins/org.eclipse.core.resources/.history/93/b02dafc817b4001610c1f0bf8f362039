@@ -1,0 +1,211 @@
+<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+<!-- 
+<div class="container">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">Administrar genero</div>
+		<div class="panel-body">
+
+			<form id="criarGeneroForm">
+				<div class="form-group">
+					<label hidden>Id</label> 
+					<input type="text" class="form-control hidden" name="id" />
+					
+					<label>Descrição</label> 
+					<input type="text" class="form-control" name="descricao" />
+					
+					<br />					
+					
+					<div class="btn-block btn-group">
+					<input type="reset" class="btn btn-default" value="Limpar" />
+					<input type="button" class="btn btn-primary" value="Salvar"
+						onclick="adicionarGenero();" />
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Listagem de Generos</div>
+			<table id="grid-generos" class="table">
+				<thead>
+					<tr>
+						<th class="text-center">ID</th>
+						<th class="text-center">Nome</th>
+						<th class="text-center">Opções</th>
+					</tr>
+				</thead>
+				<tr>
+					
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+ -->
+ 
+<div class="col-lg-6">
+	 <form id="criarFilmeForm">
+		<div class="form-group">
+			<div class="row">
+				<input type="text" class="form-control hidden" name="id" />
+				<label>Descrição</label> 
+				<input type="text" class="form-control" name="descricao" />
+			</div>
+		</div>
+	</form>
+</div>
+<div class="col-lg-6">
+	<table id="grid-generos" class="table">
+		<thead>
+			<tr>
+				<th class="text-center">ID</th>
+				<th>Descriçao</th>
+				<th class="text-center">Opções</th>
+			</tr>
+		</thead>
+		<tr>
+			
+		</tr>
+	</table>
+</div>
+
+	<!-- <div id="images" class="panel" style="float: left;"></div> -->
+
+	<script src="js/jquery-1.10.2.min.js" type="text/javascript"></script>
+	<script src="js/json.js" type="text/javascript"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<!-- <script src="js/custom.js" type="text/javascript"></script> -->
+	<script type="text/javascript">
+
+	var host = "http://localhost:8080/pyrafilms/services/";
+		
+	function listarGeneros() {
+		$.ajax({ 
+			url : host + 'generos/',
+			type : 'GET',
+			 headers: {          
+                 Accept : 'application/json'   
+  			},    
+			success : function(data) {
+				renderizarGeneros(data);
+		
+			},
+			error: function(data) {
+				alert("Erro na invocaÃ§Ã£o");
+			}
+		});	
+	};
+	
+	function renderizarGeneros(data) {
+		var str = "";
+
+		$.each(data.generoes.genero, function(i, genero) {
+			str += '<tr>';
+			str += '<td>' + genero.id + '</td>';
+			str += '<td>' + genero.descricao + '</td>';
+			str += '<td class="text-center">';
+			str += '<button class="btn btn-primary" onclick="carregaGenero(' + genero.id + ');">Editar</button>';
+			str += '&nbsp;<button class="btn btn-danger" onclick="excluirGenero('+ genero.id +')">Excluir</button>';
+			str += '</td>';
+			str += '</tr>';
+		});
+		
+		$("#grid-generos tbody").append(str);
+	
+	}
+
+	function excluirGenero(id) {
+		$.ajax({
+				url : host + 'generos/' + id,
+				type : 'DELETE',
+				success : function(data) {
+					$("#grid-generos tbody").remove(id);
+				},
+				error : function(data) {
+					console.log(data);
+					alert("Ocorreu um erro: " + data.status + " "
+							+ data.statusText);
+				}
+			});
+
+	};
+	
+	function adicionarGenero() {
+		var data = $("#criarGeneroForm").serializeJSON();
+
+		if(data.id){
+			atualizaGenero(data);	
+  		}else {
+  			criaGenero(data);
+  	  	}
+	}
+
+	function atualizaGenero(data) {
+		id = data.id;
+			data = "{\"genero\":" + JSON.stringify(data) + "}";
+			$.ajax({
+			   url : host + 'generos',
+			   type : 'PUT',
+			   contentType : 'application/json',
+			   data : data,
+			   success : function(data) {
+				  //alert("Incluído com sucesso!");
+				  //$("#criarFilmeForm")[0].reset();
+				  listarGeneros();
+			   },
+			   error : function(data) {
+					console.log(data);
+					alert("Ocorreu um erro: " + data.status + " "+ data.statusText);
+				
+			   }
+			 });
+		}
+	
+	function carregaGenero(id) {
+		$.ajax({
+			url : host + 'generos/' + id,
+			type : 'GET',
+			success : function(data) {
+				var frm =  $("#criarGeneroForm");
+				 $.each(data.genero, function(key, value){
+					    $('[name='+key+']', frm).val(value);
+				});
+			},
+			error : function(data) {
+				console.log(data);
+				alert("Ocorreu um erro: " + data.status + " "
+						+ data.statusText);
+			}
+		});
+
+	}
+
+	
+	function criaGenero(data){
+		data = "{\"genero\":" + JSON.stringify(data) + "}";
+		$.ajax({
+		   url : host + 'generos',
+		   type : 'POST',
+		   contentType : 'application/json',
+		   data : data,
+		   success : function(data) {
+			  alert("Incluído com sucesso!");
+			  $("#criarGeneroForm")[0].reset();
+			  listarGeneros();
+		   },
+		   error : function(data) {
+			 
+				console.log(data);
+				alert("Ocorreu um erro: " + data.status + " "
+						+ data.statusText);	
+		   }
+		 });
+	}
+	</script>
+</body>
+</html>

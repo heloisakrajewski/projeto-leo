@@ -1,0 +1,21 @@
+package br.com.pyrafilms.dao;
+
+import java.util.List;
+
+import javax.persistence.Query;
+
+import br.com.pyrafilms.model.Cartao;
+import br.com.pyrafilms.model.Filme;
+import br.com.pyrafilms.model.Usuario;
+
+public class FilmeDao extends JpaDaoBase<Filme> implements IDao<Filme> {
+	
+	public void remove(Long id) {
+		em.getTransaction().begin();
+		Query query = em.createQuery("DELETE FROM Filme f WHERE f.id = :id ").setParameter("id", id);
+		query.executeUpdate();
+		em.getTransaction().commit();
+	}
+	
+	
+}
