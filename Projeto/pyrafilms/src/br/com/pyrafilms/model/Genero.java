@@ -3,12 +3,16 @@ package br.com.pyrafilms.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+
+@NamedQuery(name="Genero.buscaPorId", query="SELECT g FROM Genero g where g.id = :id ") 
+
 @Entity
 public class Genero implements IBean {
 

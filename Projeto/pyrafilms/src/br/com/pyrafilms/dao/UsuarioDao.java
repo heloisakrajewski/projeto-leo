@@ -24,6 +24,4 @@ public class UsuarioDao extends JpaDaoBase<Usuario> implements IDao<Usuario> {
 		em.getTransaction().commit();
 	}
 	
-	
-	
 }

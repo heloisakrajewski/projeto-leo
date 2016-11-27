@@ -4,3 +4,17 @@
 1479661739801	Copy compilation unit
 1479768914736	Rename local variable 'cervejas'
 1479851602793	Rename type 'CervejaJaExisteException'
+1480021499043	Copy compilation unit
+1480021520499	Rename field 'usuarios'
+1480021531965	Rename local variable 'usuarios'
+1480021759481	Copy compilation unit
+1480022998288	Copy compilation unit
+1480023392553	Copy compilation unit
+1480120377028	Copy compilation unit
+1480120453720	Rename field 'filmeDao'
+1480184928380	Rename resource 'index.html'
+1480186284226	Rename resource 'indexFilme.html'
+1480186293151	Rename resource 'indexGenero.html'
+1480195904265	Rename resource 'indexCartao.html'
+1480199589404	Infer generic type arguments
+1480204467662	Infer generic type arguments

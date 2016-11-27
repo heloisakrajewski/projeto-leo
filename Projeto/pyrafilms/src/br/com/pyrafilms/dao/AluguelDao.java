@@ -6,11 +6,12 @@ import javax.persistence.Query;
 
 import br.com.pyrafilms.model.Aluguel;
 import br.com.pyrafilms.model.Cartao;
+import br.com.pyrafilms.model.Filme;
 
 public class AluguelDao extends JpaDaoBase<Aluguel> implements IDao<Aluguel> {
 
-	public Aluguel buscaPorNome(String nome) {
-		Query query = em.createNamedQuery("Aluguel.buscaPorNome").setParameter("nome", nome);
+	public Aluguel buscaPorId(Long id) {
+		Query query = em.createNamedQuery("Aluguel.buscaPorId").setParameter("id", id);
 		List<Aluguel> alugueis = query.getResultList();
 		if (!alugueis.isEmpty())
 			return alugueis.get(0);

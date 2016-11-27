@@ -12,7 +12,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 
-@NamedQuery(name="Filme.buscaPorNome", query="SELECT f FROM Filme f where f.nome = :nome ") 
+@NamedQuery(name="Filme.buscaPorId", query="SELECT f FROM Filme f where f.id = :id ")
+	
 
 @Entity
 public class Filme implements IBean{
@@ -28,7 +29,6 @@ public class Filme implements IBean{
 	
 	public Filme() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	public Filme(Long id, String nome, Genero genero, String duracao,
 			String diretor) {

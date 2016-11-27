@@ -47,8 +47,8 @@ public class UsuarioService {
 			throw new WebApplicationException(Status.CONFLICT);
 		}
 
-		URI uri = UriBuilder.fromPath("usuarios/{nome}").build(
-				usuario.getNome());
+		URI uri = UriBuilder.fromPath("usuarios/{id}").build(
+				usuario.getId());
 
 		return Response.created(uri).entity(usuario).build();
 	}

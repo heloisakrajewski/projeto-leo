@@ -17,7 +17,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 
-@NamedQuery(name="Cartao.buscaPorNome", query="SELECT c FROM Cartao c where c.nome = :nome ") 
 @Entity
 public class Cartao implements IBean {
 
@@ -29,8 +28,6 @@ public class Cartao implements IBean {
 	private Date validade;
 	private String nome;
 	private String cpf;
-	@Temporal(TemporalType.DATE)
-	private Date dataNascmento;
 	@ManyToOne
 	private Usuario usuario;
 	
@@ -39,14 +36,13 @@ public class Cartao implements IBean {
 		// TODO Auto-generated constructor stub
 	}
 	public Cartao(Long id, String numero, Date validade, String nome,
-			String cpf, Date dataNascmento, Usuario usuario) {
+			String cpf, Usuario usuario) {
 		super();
 		this.id = id;
 		this.numero = numero;
 		this.validade = validade;
 		this.nome = nome;
 		this.cpf = cpf;
-		this.dataNascmento = dataNascmento;
 		this.usuario = usuario;
 	}
 	public Long getId() {
@@ -78,12 +74,6 @@ public class Cartao implements IBean {
 	}
 	public void setCpf(String cpf) {
 		this.cpf = cpf;
-	}
-	public Date getDataNascmento() {
-		return dataNascmento;
-	}
-	public void setDataNascmento(Date dataNascmento) {
-		this.dataNascmento = dataNascmento;
 	}
 	public Usuario getUsuario() {
 		return usuario;
